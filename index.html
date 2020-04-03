@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Chaikin Curves</title>
+        <style>
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            body {
+                height: 100vh;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                background: #f9f9f9;
+            }
+            canvas {
+                background: #fff;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="node_modules/@georgedoescode/cx/dist/cx.min.js"></script>
+        <script src="./chaikin.js"></script>
+        <script>
+            const { ctx } = cx.createCanvas();
+
+            ctx.registerCustomMethod(
+                "chaikin",
+                (ctx, shape, iterations, close) => {
+                    const smoothPoints = chaikin(
+                        shape,
+                        0.25,
+                        iterations,
+                        close
+                    );
+
+                    ctx.beginPath();
+
+                    for (const point of smoothPoints) {
+                        ctx.lineTo(point.x, point.y);
+                    }
+
+                    if (close) ctx.closePath();
+                }
+            );
+
+            const shape = [
+                { x: 0, y: 0 },
+                { x: 200, y: 0 },
+                { x: 200, y: 200 },
+                { x: 0, y: 200 }
+            ];
+
+            ctx.fillStyle = "#111";
+            ctx.lineWidth = 2;
+
+            ctx.translate(320 - 100, 240 - 100);
+            ctx.chaikin(shape, 5, true);
+            ctx.stroke();
+        </script>
+    </body>
+</html>
